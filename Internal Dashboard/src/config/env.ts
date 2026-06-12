@@ -5,43 +5,62 @@ type EnvConfig = {
 
 function normalizeEnvValue(value: string): string {
   const trimmed = value.trim();
+
   if (
     (trimmed.startsWith('"') && trimmed.endsWith('"')) ||
     (trimmed.startsWith("'") && trimmed.endsWith("'"))
   ) {
     return trimmed.slice(1, -1).trim();
   }
+
   return trimmed;
 }
 
-function requireEnv(name: string): string {
-  const raw = process.env[name];
-  if (!raw) {
-    throw new Error(
-      `Missing required environment variable: ${name}. ` +
-        'Copy .env.example to .env and add your Supabase credentials.',
-    );
-  }
-
-  const value = normalizeEnvValue(raw);
-  if (!value) {
-    throw new Error(
-      `Environment variable ${name} is empty. Check for extra spaces or quotes in .env.`,
-    );
-  }
-
-  return value;
-}
-
 export function getEnvConfig(): EnvConfig {
+  const rawSupabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
+  const rawSupabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!rawSupabaseUrl) {
+    throw new Error(
+      "Missing required environment variable: EXPO_PUBLIC_SUPABASE_URL. " +
+        "Add it to your Cloudflare Build environment variables.",
+    );
+  }
+
+  if (!rawSupabaseAnonKey) {
+    throw new Error(
+      "Missing required environment variable: EXPO_PUBLIC_SUPABASE_ANON_KEY. " +
+        "Add it to your Cloudflare Build environment variables.",
+    );
+  }
+
+  const supabaseUrl = normalizeEnvValue(rawSupabaseUrl);
+  const supabaseAnonKey = normalizeEnvValue(rawSupabaseAnonKey);
+
+  if (!supabaseUrl) {
+    throw new Error("EXPO_PUBLIC_SUPABASE_URL is empty.");
+  }
+
+  if (!supabaseAnonKey) {
+    throw new Error("EXPO_PUBLIC_SUPABASE_ANON_KEY is empty.");
+  }
+
   return {
-    supabaseUrl: requireEnv('EXPO_PUBLIC_SUPABASE_URL'),
-    supabaseAnonKey: requireEnv('EXPO_PUBLIC_SUPABASE_ANON_KEY'),
+    supabaseUrl,
+    supabaseAnonKey,
   };
 }
 
 export function isSupabaseConfigured(): boolean {
-  const url = process.env.EXPO_PUBLIC_SUPABASE_URL;
-  const key = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
-  return Boolean(url && key && normalizeEnvValue(url) && normalizeEnvValue(key));
+  const rawSupabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
+  const rawSupabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!rawSupabaseUrl || !rawSupabaseAnonKey) {
+    return false;
+  }
+
+  return Boolean(
+    normalizeEnvValue(rawSupabaseUrl) &&
+      normalizeEnvValue(rawSupabaseAnonKey),
+  );
 }
