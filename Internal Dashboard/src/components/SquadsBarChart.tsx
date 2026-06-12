@@ -10,6 +10,7 @@ import {
   type TeamCountTimeSeries,
 } from '../data/team-count-time-series';
 import { BarChart } from './BarChart';
+import { getChartEmptyMessage } from './chart-empty-message';
 
 function buildChartOption(series: TeamCountTimeSeries): EChartsOption {
   return {
@@ -111,7 +112,12 @@ function SquadsBarChartConnected() {
       {!series || series.points.length === 0 ? (
         <View style={styles.messageState}>
           <Text style={styles.messageText}>
-            No squad data in the selected time frame.
+            {getChartEmptyMessage(
+              lifecycleState.status === 'success'
+                ? lifecycleState.records.length
+                : 0,
+              'No squad data in the selected time frame.',
+            )}
           </Text>
         </View>
       ) : option ? (

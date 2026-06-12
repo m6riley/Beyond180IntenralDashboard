@@ -13,6 +13,7 @@ const coach180Logo = require('../../assets/coach180-logo.png');
 import { DashboardSection } from '../components/DashboardSection';
 import { GamesSectionContent } from '../components/GamesSectionContent';
 import { SquadsSectionContent } from '../components/SquadsSectionContent';
+import { SupabaseAccessBanner } from '../components/SupabaseAccessBanner';
 import { UsersSectionContent } from '../components/UsersSectionContent';
 
 export function DashboardScreen() {
@@ -33,6 +34,7 @@ export function DashboardScreen() {
           <Text style={styles.title}>Coach180 App Statistics</Text>
         </View>
       </LinearGradient>
+      <SupabaseAccessBanner />
       <View style={styles.content}>
         <View style={styles.sections}>
           <View style={styles.column}>

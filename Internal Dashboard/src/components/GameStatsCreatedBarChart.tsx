@@ -10,6 +10,7 @@ import {
   type TeamCountTimeSeries,
 } from '../data/team-count-time-series';
 import { BarChart } from './BarChart';
+import { getChartEmptyMessage } from './chart-empty-message';
 
 const CARD_HEADER_HEIGHT = 36;
 
@@ -116,7 +117,10 @@ function GameStatsCreatedBarChartConnected() {
       {!series || series.points.length === 0 ? (
         <View style={styles.messageState}>
           <Text style={styles.messageText}>
-            No game stats in the selected time frame.
+            {getChartEmptyMessage(
+              records.length,
+              'No game stats in the selected time frame.',
+            )}
           </Text>
         </View>
       ) : option ? (

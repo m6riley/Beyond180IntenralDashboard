@@ -10,8 +10,12 @@ export function getSupabaseClient(): SupabaseClient<Database> {
     const { supabaseUrl, supabaseAnonKey } = getEnvConfig();
     supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKey, {
       auth: {
-        persistSession: true,
-        autoRefreshToken: true,
+        // Dashboard reads via the anon key only. Do not reuse Coach180's
+        // persisted browser session (same Supabase project / storage key).
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false,
+        storageKey: 'internal-dashboard-supabase-auth',
       },
     });
   }

@@ -11,6 +11,7 @@ import {
   type TeamCountTimeSeries,
 } from '../data/team-count-time-series';
 import { BarChart } from './BarChart';
+import { getChartEmptyMessage } from './chart-empty-message';
 
 type SquadEventBarChartConfig = {
   eventType: SquadEventType;
@@ -148,7 +149,14 @@ function SquadEventBarChartConnected({
 
       {!series || series.points.length === 0 ? (
         <View style={styles.messageState}>
-          <Text style={styles.messageText}>{config.emptyMessage}</Text>
+          <Text style={styles.messageText}>
+            {getChartEmptyMessage(
+              lifecycleState.status === 'success'
+                ? lifecycleState.records.length
+                : 0,
+              config.emptyMessage,
+            )}
+          </Text>
         </View>
       ) : option ? (
         <View style={styles.chartArea}>
